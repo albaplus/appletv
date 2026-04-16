@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sade: The Velvet Session (Live)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#222;--accent:#0071e3;--red:#ff3b30;--green:#30d158;--text:#f5f5f7;--text2:#a1a1a6;--text3:#6e6e73;--nav-h:64px;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:900;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:linear-gradient(to bottom,rgba(13,13,13,.98),transparent);transition:background .4s}
+nav.solid{background:rgba(13,13,13,.96);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-logo{display:flex;align-items:center;gap:7px;font-size:18px;font-weight:600;color:var(--text);text-decoration:none}
+.nav-logo svg{width:22px;height:22px;fill:currentColor}
+.nav-center{display:flex;gap:2px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:4px 6px}
+.nav-center a{color:var(--text2);text-decoration:none;font-size:14px;padding:6px 16px;border-radius:20px;transition:all .2s;white-space:nowrap}
+.nav-center a:hover{color:var(--text);background:rgba(255,255,255,.08)}
+.nav-center a.active{background:var(--text);color:#000;font-weight:500}
+.nav-right{display:flex;gap:8px}
+.nav-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;border:none;background:transparent;transition:all .2s}
+.nav-icon:hover{color:var(--text);background:rgba(255,255,255,.1)}
+.nav-icon svg{width:19px;height:19px;fill:currentColor}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center 20%;filter:saturate(1.05)}
+.hero-vignette{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,rgba(13,13,13,.75) 35%,rgba(13,13,13,.2) 70%,transparent 100%)}
+.hero-vignette2{position:absolute;inset:0;background:linear-gradient(to right,rgba(13,13,13,.92) 0%,rgba(13,13,13,.4) 55%,transparent 100%)}
+.hero-content{position:relative;z-index:2;padding:0 56px 60px;max-width:600px}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:18px;backdrop-filter:blur(10px)}
+.dot-new{width:6px;height:6px;border-radius:50%;background:#30d158;flex-shrink:0}
+.hero-logo-title{font-size:clamp(46px,5.5vw,74px);font-weight:700;line-height:1;letter-spacing:-.03em;margin-bottom:14px}
+.hero-tagline{font-size:16px;color:var(--text2);line-height:1.55;margin-bottom:12px;font-weight:300;max-width:480px}
+.hero-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--text3);margin-bottom:30px}
+.hero-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3)}
+.rating-badge{background:rgba(255,200,0,.14);color:#ffc800;border:1px solid rgba(255,200,0,.3);border-radius:6px;padding:2px 7px;font-size:12px;font-weight:700}
+.res-badge{background:rgba(0,113,227,.15);color:#0a84ff;border:1px solid rgba(0,113,227,.3);border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn-play{display:inline-flex;align-items:center;gap:9px;background:var(--text);color:#000;border:none;border-radius:12px;padding:14px 30px;font-size:16px;font-weight:600;cursor:pointer;transition:all .22s;font-family:inherit;letter-spacing:-.01em}
+.btn-play:hover{background:#e5e5ea;transform:scale(1.025)}
+.btn-play svg{width:18px;height:18px;fill:currentColor}
+.btn-secondary{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.1);color:var(--text);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px 24px;font-size:15px;font-weight:500;cursor:pointer;transition:all .22s;font-family:inherit;backdrop-filter:blur(10px)}
+.btn-secondary:hover{background:rgba(255,255,255,.18)}
+.btn-secondary svg{width:18px;height:18px;fill:currentColor}
+.btn-icon{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:inline-flex;align-items:center;justify-content:center;color:var(--text);cursor:pointer;transition:all .22s;backdrop-filter:blur(10px)}
+.btn-icon:hover{background:rgba(255,255,255,.2);transform:scale(1.05)}
+.btn-icon svg{width:20px;height:20px;fill:currentColor}
+.player-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0);backdrop-filter:blur(0px);display:flex;align-items:center;justify-content:center;transition:all .35s;pointer-events:none;opacity:0}
+.player-overlay.open{background:rgba(0,0,0,.92);backdrop-filter:blur(18px);pointer-events:all;opacity:1}
+.player-container{position:relative;width:min(1100px,96vw);border-radius:20px;overflow:hidden;background:#000;box-shadow:0 40px 100px rgba(0,0,0,.9);transform:scale(.92) translateY(24px);transition:transform .35s cubic-bezier(.34,1.3,.64,1);aspect-ratio:16/9}
+.player-overlay.open .player-container{transform:scale(1) translateY(0)}
+.player-video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.player-close{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:50%;background:rgba(20,20,20,.75);border:1px solid rgba(255,255,255,.15);color:var(--text);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s;backdrop-filter:blur(10px)}
+.player-close:hover{background:rgba(60,60,60,.9)}
+.player-controls{position:absolute;bottom:0;left:0;right:0;padding:0 20px 20px;background:linear-gradient(to top,rgba(0,0,0,.9),transparent);opacity:0;transition:opacity .25s}
+.player-container:hover .player-controls{opacity:1}
+.player-progress-wrap{margin-bottom:14px;cursor:pointer;padding:6px 0}
+.player-progress-track{height:4px;background:rgba(255,255,255,.2);border-radius:2px;position:relative;transition:height .15s}
+.player-progress-wrap:hover .player-progress-track{height:6px}
+.player-progress-fill{height:100%;background:var(--text);border-radius:2px;position:relative}
+.player-progress-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--text);opacity:0;transition:opacity .15s}
+.player-progress-wrap:hover .player-progress-fill::after{opacity:1}
+.player-progress-buf{position:absolute;top:0;left:0;height:100%;background:rgba(255,255,255,.35);border-radius:2px}
+.ctrl-row{display:flex;align-items:center;gap:12px}
+.ctrl-row-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ctrl-btn{width:38px;height:38px;border-radius:50%;border:none;background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.ctrl-btn:hover{background:rgba(255,255,255,.12)}
+.ctrl-btn svg{width:20px;height:20px;fill:currentColor}
+.vol-wrap{display:flex;align-items:center;gap:8px}
+.vol-slider{width:80px;height:3px;appearance:none;background:rgba(255,255,255,.25);border-radius:2px;outline:none;cursor:pointer}
+.vol-slider::-webkit-slider-thumb{appearance:none;width:13px;height:13px;border-radius:50%;background:var(--text);cursor:pointer}
+.time-label{font-size:13px;color:rgba(255,255,255,.75);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctrl-pill{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);transition:background .2s}
+.ctrl-pill:hover{background:rgba(255,255,255,.2)}
+.section{padding:0 48px;margin-bottom:48px}
+.sec-title{font-size:20px;font-weight:600;letter-spacing:-.01em;margin-bottom:20px}
+.sec-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.sec-title-row .sec-title{margin-bottom:0}
+.see-all{font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;display:flex;align-items:center;gap:3px}
+.see-all svg{width:13px;height:13px;fill:currentColor}
+.synopsis-wrap{display:grid;grid-template-columns:1fr 280px;gap:48px;align-items:start}
+.synopsis-text{font-size:16px;color:var(--text2);line-height:1.7;overflow:hidden;position:relative}
+.synopsis-text.collapsed{max-height:90px}
+.synopsis-text.collapsed::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to top,var(--bg),transparent)}
+.see-more-btn{background:none;border:none;color:var(--accent);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:12px;display:inline-flex;align-items:center;gap:4px;padding:0}
+.see-more-btn svg{width:14px;height:14px;fill:currentColor;transition:transform .2s}
+.see-more-btn.expanded svg{transform:rotate(180deg)}
+.meta-grid{display:flex;flex-direction:column;gap:14px}
+.meta-row{display:flex;flex-direction:column;gap:4px}
+.meta-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.meta-value{font-size:14px;color:var(--text2)}
+.quality-row{display:flex;gap:6px;flex-wrap:wrap}
+.q-badge{display:inline-flex;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em}
+.q-badge.dolby{background:rgba(255,190,0,.08);border-color:rgba(255,190,0,.25);color:#ffc800}
+.cast-row{display:flex;gap:16px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.cast-row::-webkit-scrollbar{height:0}
+.cast-card{flex:0 0 auto;width:108px;text-align:center;cursor:pointer}
+.cast-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:var(--bg3);margin:0 auto 8px;display:block;border:2px solid rgba(255,255,255,.08);transition:border-color .2s}
+.cast-card:hover .cast-avatar{border-color:rgba(255,255,255,.3)}
+.cast-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cast-role{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.episodes-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.season-select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;font-family:inherit;appearance:none;outline:none}
+.episode-list{display:flex;flex-direction:column;gap:2px}
+.ep-item{display:grid;grid-template-columns:auto 120px 1fr;gap:16px;align-items:center;padding:14px 16px;border-radius:12px;cursor:pointer;transition:background .2s;position:relative}
+.ep-item:hover{background:rgba(255,255,255,.05)}
+.ep-item.watching{background:rgba(0,113,227,.08);border:1px solid rgba(0,113,227,.2)}
+.ep-num{font-size:16px;font-weight:600;color:var(--text3);width:28px;text-align:center}
+.ep-thumb-wrap{position:relative;border-radius:10px;overflow:hidden;background:var(--bg3)}
+.ep-thumb{width:120px;height:68px;object-fit:cover;display:block}
+.ep-thumb-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);opacity:0;transition:opacity .2s}
+.ep-item:hover .ep-thumb-play{opacity:1}
+.ep-thumb-play svg{width:28px;height:28px;fill:#fff}
+.ep-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15)}
+.ep-progress-fill{height:100%;background:var(--accent);border-radius:0 2px 2px 0}
+.ep-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ep-title{font-size:15px;font-weight:500}
+.ep-duration{font-size:13px;color:var(--text3)}
+.ep-desc{font-size:13px;color:var(--text3);margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ep-watching-label{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
+.rec-row{display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.rec-row::-webkit-scrollbar{height:0}
+.rec-card{flex:0 0 auto;width:200px;cursor:pointer;border-radius:12px;overflow:hidden;background:var(--bg2);border:1px solid rgba(255,255,255,.06);transition:transform .3s,border-color .3s;position:relative}
+.rec-card:hover{transform:scale(1.04);border-color:rgba(255,255,255,.15);z-index:5}
+.rec-card:hover .rec-overlay{opacity:1}
+.rec-thumb{width:100%;height:112px;object-fit:cover;display:block;background:var(--bg3)}
+.rec-overlay{position:absolute;top:0;left:0;right:0;height:112px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent 60%);opacity:0;transition:opacity .25s;display:flex;align-items:flex-end;padding:10px}
+.rec-play-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;margin-left:auto}
+.rec-play-btn svg{width:14px;height:14px;fill:#000;margin-left:1px}
+.rec-info{padding:10px 12px 12px}
+.rec-title{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.interactions-bar{display:flex;align-items:center;gap:16px;padding:20px 48px;background:rgba(255,255,255,.025);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+.interact-btn{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .22s;font-family:inherit}
+.interact-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.interact-btn svg{width:16px;height:16px;fill:currentColor}
+.interact-btn.active{background:rgba(255,59,48,.1);border-color:rgba(255,59,48,.35);color:var(--red)}
+.interact-btn.in-list{background:rgba(48,209,88,.1);border-color:rgba(48,209,88,.35);color:var(--green)}
+.divider{height:1px;background:rgba(255,255,255,.06);margin:0 48px}
+.toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(36,36,38,.97);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 24px;font-size:14px;color:var(--text);opacity:0;transition:all .28s;z-index:9999;pointer-events:none;backdrop-filter:blur(20px);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.06);margin-top:48px}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px}
+.footer-links a{color:var(--text3);font-size:12px;text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+.footer-copy{font-size:12px;color:var(--text3)}
+@media(max-width:900px){.hero-content{padding:0 24px 48px;max-width:100%}.section{padding:0 20px}.divider{margin:0 20px}.interactions-bar{padding:16px 20px;flex-wrap:wrap;gap:10px}.synopsis-wrap{grid-template-columns:1fr;gap:32px}nav{padding:0 20px}.nav-center{display:none}footer{padding:32px 20px}}
+@media(max-width:600px){.hero-logo-title{font-size:38px}.ep-item{grid-template-columns:auto 96px 1fr}.ep-thumb{width:96px;height:54px}}
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.shimmer{background:linear-gradient(90deg,var(--bg3) 25%,rgba(255,255,255,.04) 50%,var(--bg3) 75%);background-size:1200px 100%;animation:shimmer 1.8s infinite}
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a class="nav-logo" href="#">
+    <svg viewBox="0 0 814 1000"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.5-155.5-127.4C46 790.6 0 663 0 541.8c0-207.5 135.4-317.3 268.3-317.3 99.8 0 176.3 65.7 235.1 65.7 56.1 0 144.1-69.3 256.8-69.3z"/></svg>
+    TV+
+  </a>
+  <div class="nav-center">
+    <a href="#">Início</a>
+    <a href="#" class="active">Originais</a>
+    <a href="#">Filmes</a>
+    <a href="#">Séries</a>
+    <a href="#">Infantil</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon" onclick="toast('Busca em breve')">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    </button>
+    <button class="nav-icon" onclick="toast('Conta')">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAjO_ui5uSYOxpDhwlpRmm1LGthVCznuy4yscbX8Shdkp0F2S65DIyGc96iSxk7S70F8tUNw0Tm_eT4cXVXB3xmxRnB8i7IJVEfHdBPoUyA&s=10')"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-vignette2"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot-new"></span>Especial</div>
+    <h1 class="hero-logo-title">Sade: The Velvet Session (Live)</h1>
+    <p class="hero-tagline">Uma transmissão íntima e noturna que captura Sade no auge de sua sonoridade, apresenta uma performance crua e, ao mesmo tempo, sofisticada, onde arranjos minimalistas encontram grooves profundos e cada nota respira elegância.</p>
+    <div class="hero-meta">
+      <span class="rating-badge">⭐ 10</span>
+      <span class="hero-meta-dot"></span><span>2026</span>
+      <span class="hero-meta-dot"></span><span>Musical</span>
+      <span class="hero-meta-dot"></span><span></span>
+      <span class="hero-meta-dot"></span><span>+16</span>
+      <span class="res-badge">4K HDR</span>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-play" onclick="openPlayer()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Assistir
+      </button>
+      <button class="btn-secondary" id="heroAddBtn" onclick="toggleList(this)">
+        <svg viewBox="0 0 24 24" id="heroAddIcon"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Minha Lista
+      </button>
+      <button class="btn-icon" onclick="toggleLike(this)">
+        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+      </button>
+      <button class="btn-icon" onclick="shareContent()">
+        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="player-overlay" id="playerOverlay" onclick="handleOverlayClick(event)">
+  <div class="player-container" id="playerContainer">
+    <div style="width:100%;height:100%;position:relative"><iframe width="975" height="548" src="https://www.youtube.com/embed/WpCcZSiI-O8?list=RDWpCcZSiI-O8" title="Sade Ahoy Sportpaleis Rotterdam 21-9-1984" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <button class="player-close" onclick="closePlayer()">✕</button>
+  </div>
+</div>
+
+<div>
+  <div class="interactions-bar">
+    <button class="interact-btn" id="likeBtn2" onclick="toggleLike2()">
+      <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>Curtir
+    </button>
+    <button class="interact-btn" id="listBtn2" onclick="toggleList2()">
+      <svg viewBox="0 0 24 24" id="listIcon2"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Minha Lista
+    </button>
+    <button class="interact-btn" onclick="shareContent()">
+      <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>Compartilhar
+    </button>
+  </div>
+
+  <div class="section" style="padding-top:40px">
+    <div class="synopsis-wrap">
+      <div>
+        <h2 class="sec-title">Sobre</h2>
+        <div class="synopsis-text collapsed" id="synopsisText">Mark Scout (Adam Scott) lidera uma equipe de trabalhadores do departamento de refinamento de dados da Lumon Industries, cujas memórias foram cirurgicamente divididas entre suas vidas de trabalho e pessoal. Esse arranjo perturbador logo começa a desmoronar quando Mark e seus colegas se veem no centro de uma conspiração que ameaça tanto suas identidades internas quanto externas.</div>
+        <button class="see-more-btn" id="seeMoreBtn" onclick="toggleSynopsis()">
+          <span id="seeMoreLabel">Ver mais</span>
+          <svg viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+        </button>
+      </div>
+      <div>
+        <div class="meta-grid">
+          <div class="meta-row"><span class="meta-label">Criador</span><span class="meta-value">SADE</span></div>
+          <div class="meta-row"><span class="meta-label">Diretor</span><span class="meta-value">Julien Temple, Tim Pope</span></div>
+          <div class="meta-row"><span class="meta-label">Elenco principal</span><span class="meta-value">Sade Adu</span></div>
+          <div class="meta-row"><span class="meta-label">Gênero</span><span class="meta-value">Soul · Jazz · Sophisti-pop · Concerto ao Vivo</span></div>
+          <div class="meta-row"><span class="meta-label">Idiomas</span><span class="meta-value">Inglês · Português · Espanhol · Francês</span></div>
+          <div class="meta-row"><span class="meta-label">Estúdio</span><span class="meta-value">Epic Records · Sony Music Entertainment</span></div>
+          <div class="meta-row"><span class="meta-label">Qualidade</span><div class="quality-row"><span class="q-badge">4K</span><span class="q-badge">HDR10</span><span class="q-badge dolby">Dolby Vision</span><span class="q-badge dolby">Dolby Atmos</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section" style="padding-top:36px">
+    <div class="sec-title-row">
+      <h2 class="sec-title">Elenco & Equipe</h2>
+      <button class="see-all" onclick="toast('Ver todo o elenco')">Ver todos <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+    </div>
+    <div class="cast-row" id="castRow"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="section" style="padding-top:36px">
+    <div class="episodes-header">
+      <h2 class="sec-title" style="margin-bottom:0">Episódios</h2>
+      <select class="season-select" id="seasonSelect" onchange="renderEpisodes()">
+        <option value="1"></option>
+      </select>
+    </div>
+    <div class="episode-list" id="episodeList"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="section" style="padding-top:36px">
+    <div class="sec-title-row">
+      <h2 class="sec-title">Você também pode gostar</h2>
+      <button class="see-all" onclick="toast('Ver mais recomendações')">Ver mais <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+    </div>
+    <div class="rec-row" id="recRow"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="section" style="padding-top:36px">
+    <h2 class="sec-title">Detalhes</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px">
+      <div class="meta-row"><span class="meta-label">Ano de lançamento</span><span class="meta-value">2026</span></div>
+      <div class="meta-row"><span class="meta-label">País de origem</span><span class="meta-value">Reino Unido</span></div>
+      <div class="meta-row"><span class="meta-label">Classificação indicativa</span><span class="meta-value">+16 — Conteúdo adulto, violência psicológica</span></div>
+      <div class="meta-row"><span class="meta-label">Episódios</span><span class="meta-value"></span></div>
+      <div class="meta-row"><span class="meta-label">Duração média</span><span class="meta-value">~55 min</span></div>
+      <div class="meta-row"><span class="meta-label">Legendas disponíveis</span><span class="meta-value">PT-BR · EN · ES · FR · DE · JA · KO</span></div>
+      <div class="meta-row"><span class="meta-label">Áudios disponíveis</span><span class="meta-value">Inglês (original) · Português · Espanhol</span></div>
+      <div class="meta-row"><span class="meta-label">Produtora executiva</span><span class="meta-value">Ben Stiller, Dan Erickson, Mark Friedman</span></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="#">Privacidade</a><a href="#">Termos de uso</a>
+    <a href="#">Suporte</a><a href="#">Acessibilidade</a>
+  </div>
+  <div class="footer-copy">Copyright © 2025 Apple Inc. Todos os direitos reservados.</div>
+</footer>
+
+<div class="toast" id="toastEl"></div>
+<script>
+const CAST=[{"name":"SADE","role":"","img":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT0f_pProOc4y5VpgnYRbmKyEjsQMvoB-u7ManqVb4h_0kOEO9NXVrPE9y-55GfuXhA8T9QB_c16ChQHEB8oYtv1EVOxkyz2m-AWBpTKBZ&s=10"}];
+const SEASONS=[{"label":"","episodes":[]}];
+const RECS=[];
+let isLiked=false,inList=false;
+
+function renderCast(){
+  const row=document.getElementById('castRow');
+  row.innerHTML=CAST.map(c=>`<div class="cast-card">
+    <img class="cast-avatar" src="${c.img}" alt="${c.name}" loading="lazy"
+      onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=333&color=fff&size=80'">
+    <div class="cast-name">${c.name}</div>
+    <div class="cast-role">${c.role}</div>
+  </div>`).join('');
+}
+
+function renderEpisodes(){
+  const idx=parseInt(document.getElementById('seasonSelect').value)-1;
+  const eps=(SEASONS[idx]||SEASONS[0]).episodes;
+  const list=document.getElementById('episodeList');
+  list.innerHTML=eps.map(ep=>`
+    <div class="ep-item${ep.progress>0&&ep.progress<100?' watching':''}">
+      <div class="ep-num">${ep.n}</div>
+      <div class="ep-thumb-wrap">
+        <img class="ep-thumb" src="${ep.img}" alt="${ep.title}" loading="lazy">
+        <div class="ep-thumb-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        ${ep.progress>0?`<div class="ep-progress"><div class="ep-progress-fill" style="width:${ep.progress}%"></div></div>`:''}
+      </div>
+      <div>
+        <div class="ep-title-row">
+          <span class="ep-title">${ep.title}</span>
+          <span class="ep-duration">${ep.dur}</span>
+        </div>
+        <div class="ep-desc">${ep.desc}</div>
+        ${ep.progress>0&&ep.progress<100?`<div class="ep-watching-label">Continuar — ${ep.progress}%</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function renderRecs(){
+  const row=document.getElementById('recRow');
+  row.innerHTML=RECS.map(r=>`
+    <div class="rec-card" onclick="toast('Abrindo: ${r.title}')">
+      <img class="rec-thumb" src="${r.img}" alt="${r.title}" loading="lazy">
+      <div class="rec-overlay"><div class="rec-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+      <div class="rec-info"><div class="rec-title">${r.title}</div><div class="rec-sub">${r.sub}</div></div>
+    </div>`).join('');
+}
+
+function openPlayer(){document.getElementById('playerOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closePlayer(){document.getElementById('playerOverlay').classList.remove('open');document.body.style.overflow='';try{document.getElementById('mainVideo').pause();}catch(e){}}
+function handleOverlayClick(e){if(e.target===document.getElementById('playerOverlay'))closePlayer();}
+
+function toggleLike(btn){isLiked=!isLiked;btn.style.background=isLiked?'rgba(255,59,48,.15)':'';btn.style.color=isLiked?'var(--red)':'';toast(isLiked?'👍 Curtido!':'Curtida removida');}
+function toggleLike2(){isLiked=!isLiked;const b=document.getElementById('likeBtn2');b.classList.toggle('active',isLiked);toast(isLiked?'👍 Curtido!':'Curtida removida');}
+function toggleList(btn){inList=!inList;btn.style.borderColor=inList?'rgba(48,209,88,.4)':'';btn.style.color=inList?'var(--green)':'';toast(inList?'✅ Adicionado à lista':'Removido da lista');}
+function toggleList2(){inList=!inList;const b=document.getElementById('listBtn2');b.classList.toggle('in-list',inList);toast(inList?'✅ Adicionado à lista':'Removido da lista');}
+function shareContent(){if(navigator.share){navigator.share({title:'Sade: The Velvet Session (Live)',url:window.location.href}).catch(()=>{});}else{navigator.clipboard&&navigator.clipboard.writeText(window.location.href);toast('🔗 Link copiado!');}}
+function toggleSynopsis(){const t=document.getElementById('synopsisText'),b=document.getElementById('seeMoreBtn'),l=document.getElementById('seeMoreLabel');const exp=!t.classList.contains('collapsed');t.classList.toggle('collapsed',exp);l.textContent=exp?'Ver mais':'Ver menos';b.classList.toggle('expanded',!exp);}
+let _tt;function toast(msg){const el=document.getElementById('toastEl');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2600);}
+window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('solid',window.scrollY>60));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('playerOverlay').classList.contains('open'))closePlayer();});
+renderCast();renderEpisodes();renderRecs();
+</script>
+</body>
+</html>
