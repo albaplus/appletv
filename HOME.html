@@ -173,6 +173,7 @@
   footer{padding:48px 56px 40px;border-top:1px solid rgba(255,255,255,.06);margin-top:16px}
   .footer-links{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:24px}
   .footer-links a{color:var(--text3);font-size:13px;text-decoration:none;transition:color .2s}
+  .footer-links a[href^='http']{color:var(--text2)}
   .footer-links a:hover{color:var(--text2)}
   .footer-copy{font-size:12px;color:var(--text3)}
 
@@ -455,7 +456,7 @@
       <div class="modal-meta" id="modalMeta"></div>
       <p class="modal-desc" id="modalDesc"></p>
       <div class="modal-actions">
-        <button class="btn-play" onclick="showToast('▶ Reproduzindo…')">
+        <button class="btn-play" id="modalPlayBtn" onclick="currentModal&&currentModal.url?window.open(currentModal.url,'_blank'):showToast('▶ Reproduzindo…')">
           <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M8 5v14l11-7z"/></svg>
           Assistir
         </button>
@@ -491,29 +492,60 @@
    DATA
 ===================================================================== */
 const SHOWS = [
-  {id:0,title:'Ted Lasso',sub:'Jason Sudeikis',type:'Série',year:'2020–2023',genre:'Comédia · Drama',season:'3 Temporadas',rating:'8.8',progress:65,img:'https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1800&q=80',heroPos:'center 20%',desc:'Um treinador americano de futebol americano é contratado para treinar um time inglês de futebol, apesar de não ter experiência no esporte. Uma história sobre bondade, trabalho em equipe e crença.'},
-  {id:1,title:'Foundation',sub:'Jared Harris',type:'Série',year:'2021–',genre:'Ficção Científica',season:'3 Temporadas',rating:'7.4',progress:30,img:'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=1800&q=80',heroPos:'center center',desc:'Um grupo de exilados embarca numa jornada épica para salvar a humanidade e reconstruir a civilização face à queda de um Império Galáctico. Baseado nos clássicos de Isaac Asimov.'},
-  {id:2,title:'Severance',sub:'Adam Scott',type:'Série',year:'2022–',genre:'Drama · Ficção Científica',season:'2 Temporadas',rating:'8.7',progress:0,img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1800&q=80',heroPos:'center 40%',desc:'Mark lidera uma equipe na Lumon Industries, cujos funcionários se submeteram a um procedimento cirúrgico que divide suas memórias entre vida profissional e pessoal. Um thriller psicológico perturbador.'},
-  {id:3,title:'The Morning Show',sub:'Jennifer Aniston',type:'Série',year:'2019–',genre:'Drama',season:'3 Temporadas',rating:'8.2',progress:80,img:'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1800&q=80',heroPos:'center 30%',desc:'Nos bastidores de um popular programa matinal de TV americana, rivalidades, escândalos e jogos de poder definem o cotidiano de apresentadoras e produtores.'},
-  {id:4,title:'SEE',sub:'Jason Momoa',type:'Série',year:'2019–2022',genre:'Ação · Ficção Científica',season:'3 Temporadas',rating:'7.6',progress:0,img:'https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=1800&q=80',heroPos:'center center',desc:'Em um futuro distante, um vírus destruiu a visão da humanidade. Numa sociedade que perdeu a capacidade de ver, gêmeos nascem com esse sentido perdido, desencadeando uma guerra.'},
-  {id:5,title:'Acapulco',sub:'Eugenio Derbez',type:'Série',year:'2021–',genre:'Comédia',season:'3 Temporadas',rating:'8.0',progress:50,img:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&q=80',heroPos:'center 60%',desc:'Em 1984, um jovem consegue o emprego dos sonhos num resort de luxo em Acapulco. Mas aprende que conseguir o que sempre quis pode ser mais complicado do que parece.'},
-  {id:6,title:'Slow Horses',sub:'Gary Oldman',type:'Série',year:'2022–',genre:'Thriller · Drama',season:'4 Temporadas',rating:'8.1',progress:20,img:'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1800&q=80',heroPos:'center center',desc:'Uma equipe de agentes britânicos de inteligência que, por diversas razões, foram enviados para um departamento burocrático desprezado pelo MI5. Gary Oldman brilha como o chefe relutante.'},
-  {id:7,title:'Pachinko',sub:'Lee Min-ho',type:'Série',year:'2022–',genre:'Drama',season:'2 Temporadas',rating:'8.4',progress:0,img:'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1800&q=80',heroPos:'center 40%',desc:'Uma saga épica sobre quatro gerações de uma família coreana que luta pela sobrevivência e pelo sucesso. Uma história de amor, guerra, perseverança e identidade.'},
-  {id:8,title:'Finch',sub:'Tom Hanks',type:'Filme',year:'2021',genre:'Drama · Ficção Científica',season:'1h 55min',rating:'7.4',progress:0,img:'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1800&q=80',heroPos:'center center',desc:'Um engenheiro robótico, um dos poucos sobreviventes de uma catástrofe solar, construiu um robô para cuidar de seu cachorro quando ele não puder mais. Uma história emocionante sobre conexão.'},
-  {id:9,title:'Killers of the Flower Moon',sub:'Leonardo DiCaprio',type:'Filme',year:'2023',genre:'Crime · Drama',season:'3h 26min',rating:'7.7',progress:0,img:'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1800&q=80',heroPos:'center center',desc:'Na Oklahoma dos anos 1920, o povo Osage é assassinado misteriosamente depois que petróleo é descoberto em suas terras. O FBI inicia uma das primeiras investigações da sua história.'},
-  {id:10,title:'Napoleon',sub:'Joaquin Phoenix',type:'Filme',year:'2023',genre:'Drama Histórico',season:'2h 38min',rating:'6.5',progress:0,img:'https://images.unsplash.com/photo-1502899576159-f224dc2349fa?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1502899576159-f224dc2349fa?w=1800&q=80',heroPos:'center center',desc:'Uma visão espetacular da trajetória de poder de Napoleão Bonaparte e de sua relação obsessiva e tempestuosa com Josefina, vista através de batalhas épicas e estratégias militares revolucionárias.'},
-  {id:11,title:'Bona Fide',sub:'Chloe Fineman',type:'Série',year:'2024–',genre:'Comédia',season:'1 Temporada',rating:'7.9',progress:0,img:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80',heroImg:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1800&q=80',heroPos:'center center',desc:'Uma comédia sobre uma mulher que tenta reconstruir sua vida em Paris após uma separação inesperada, navegando entre cultura, amor e autoconhecimento.'},
+  {
+    "title": "Sade: The Velvet Session (Live)",
+    "sub": "SADE",
+    "type": "Filme",
+    "year": "2026",
+    "season": "1h55",
+    "genre": "Musical",
+    "rating": "8.0",
+    "progress": 0,
+    "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAjO_ui5uSYOxpDhwlpRmm1LGthVCznuy4yscbX8Shdkp0F2S65DIyGc96iSxk7S70F8tUNw0Tm_eT4cXVXB3xmxRnB8i7IJVEfHdBPoUyA&s=10",
+    "heroImg": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAjO_ui5uSYOxpDhwlpRmm1LGthVCznuy4yscbX8Shdkp0F2S65DIyGc96iSxk7S70F8tUNw0Tm_eT4cXVXB3xmxRnB8i7IJVEfHdBPoUyA&s=10",
+    "heroPos": "center center",
+    "desc": "Uma transmissão íntima e noturna que captura Sade no auge de sua sonoridade, apresenta uma performance crua e, ao mesmo tempo, sofisticada, onde arranjos minimalistas encontram grooves profundos e cada nota respira elegância.",
+    "url": "https://albaplus.github.io/appletv/sade_-the-velvet-session-(live).html",
+    "id": 0
+  }
 ];
 
 /* =====================================================================
    LIVE CHANNELS + SCHEDULE DATA
 ===================================================================== */
 const LIVE_CHANNELS = [
-  { id: 'nbc',     name: 'NBC',           color: '#0033a0', logo: 'NBC'  },
-  { id: 'cnn',     name: 'CNN',           color: '#cc0000', logo: 'CNN'  },
-  { id: 'hbo',     name: 'HBO',           color: '#5c2d91', logo: 'HBO'  },
-  { id: 'mtv',     name: 'MTV',           color: '#000000', logo: 'MTV'  },
-  { id: 'special', name: '⭐ Exclusivo',   color: '#ff9f0a', logo: 'LIVE' },
+  {
+    "id": "nbc",
+    "name": "NBC",
+    "logo": "NBC",
+    "color": "#ff00ae",
+    "embed": ""
+  },
+  {
+    "id": "cnn",
+    "name": "CNN",
+    "color": "#cc0000",
+    "logo": "CNN"
+  },
+  {
+    "id": "hbo",
+    "name": "HBO",
+    "color": "#5c2d91",
+    "logo": "HBO"
+  },
+  {
+    "id": "mtv",
+    "name": "MTV",
+    "color": "#000000",
+    "logo": "MTV"
+  },
+  {
+    "id": "special",
+    "name": "COACHELLA",
+    "logo": "LIVE",
+    "color": "#ff9f0a",
+    "embed": "<iframe width=\"1331\" height=\"749\" src=\"https://www.youtube.com/embed/xIiSaqq10Yw\" title=\"Main Stage - Live from Coachella 2026\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+  }
 ];
 
 function buildSchedule(channelId) {
@@ -588,7 +620,7 @@ function savePrefs(patch) {
 /* =====================================================================
    STATE
 ===================================================================== */
-const HEROES = [0,2,6,1];
+const HEROES = [0];
 let heroIdx = 0;
 let heroTimer;
 let watchlist = new Set();
@@ -729,7 +761,9 @@ function scrollRow(id, dir) {
    MODAL
 ===================================================================== */
 function openModal(id) {
-  const s = SHOWS[id]; currentModal = s;
+  const s = SHOWS[id];
+  if (s && s.url) { const u = /^https?:\/\//i.test(s.url) ? s.url : 'https://' + s.url; window.location.href = u; return; }
+  currentModal = s;
   document.getElementById('modalImg').src = s.heroImg;
   document.getElementById('modalBadge').textContent = s.type + ' · ' + s.year;
   document.getElementById('modalTitle').textContent = s.title;
@@ -1034,7 +1068,7 @@ function renderLivePage(channelId) {
     </div>`;
 
   // Start animated canvas "live feed"
-  requestAnimationFrame(() => startLiveCanvas(channelId, ch.color));
+  requestAnimationFrame(() => startLivePlayer(channelId, ch));
 }
 
 /* =====================================================================
@@ -1141,6 +1175,20 @@ function startLiveCanvas(channelId, accentColor) {
     ctx.fillRect(0, 0, W, H);
   }
   draw();
+}
+
+/* =====================================================================
+   LIVE PLAYER (embed or canvas)
+===================================================================== */
+function startLivePlayer(channelId, ch) {
+  const wrap = document.getElementById('livePlayerWrap');
+  if (!wrap) return;
+  if (ch && ch.embed) {
+    stopLiveCanvas();
+    wrap.innerHTML = '<iframe src="' + ch.embed + '" width="100%" height="100%" style="border:0;display:block;width:100%;height:100%;position:absolute;inset:0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>';
+    return;
+  }
+  startLiveCanvas(channelId, ch ? ch.color : '#cc0000');
 }
 
 /* =====================================================================
